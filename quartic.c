@@ -1,5 +1,5 @@
-#include <assert.h>
 #include <math.h>
+#include <mathbits/quartic.h>
 
 double real_depressed_cubic_root(double A, double B)
 {
@@ -143,7 +143,8 @@ int real_quartic_roots(double B, double C, double D, double E,
         y = cr[i] > y ? cr[i] : y;
 
     double W_sq = alpha + 2*y;
-    assert(W_sq > 0);
+    if (W_sq <= 0)
+        return -1;
 
     double W = sqrt(W_sq);
     
@@ -174,6 +175,8 @@ int real_quartic_roots(double B, double C, double D, double E,
 
 #if 0
 
+// Simple test code
+
 double poly_eval(const double coef[], int n, double x)
 {
     double y = coef[n];
@@ -183,22 +186,9 @@ double poly_eval(const double coef[], int n, double x)
     return y;
 }
 
-double newton(const double coef[], int n, double x)
-{
-    double y = coef[n];
-    double d = coef[n]*n;
-    int i;
-    for (i=n-1; i>0; --i) {
-        y = y*x + coef[i];
-        d = d*x + coef[i]*i;
-    }
-    y = y*x + coef[0];
-
-    return x - y/d;
-}
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 int main(int argc, char* argv[])
 {
@@ -211,12 +201,16 @@ int main(int argc, char* argv[])
 
     double invA = 1/coef[4];
     double roots[4];
-    int nr = real_quartic_roots(invA * coef[3], invA * coef[2], invA * coef[1], invA * coef[0],
+    int nr = real_quartic_roots(invA * coef[3],
+                                invA * coef[2],
+                                invA * coef[1],
+                                invA * coef[0],
                                 roots);
 
     for (i=0; i<nr; ++i) {
-        double x = roots[i];//newton(coef, 4, roots[i]);
-        printf("p(%.16g) = %.16g\n", x, poly_eval(coef, 4, x));
+        double x = roots[i];
+        double y = poly_eval(coef, 4, x);
+        printf("p(%.16g) = %.16g\n", x, y);
     }
 
     return 0;
