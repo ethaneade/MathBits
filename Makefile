@@ -6,3 +6,8 @@ OBJS=quartic.o
 
 libmathbits.a: $(OBJS)
 	$(AR) rvs $@ $^
+
+clean:
+	rm $(OBJS)
+	rm libmathbits.a
+ 
