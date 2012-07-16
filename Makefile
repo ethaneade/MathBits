@@ -8,6 +8,6 @@ libmathbits.a: $(OBJS)
 	$(AR) rvs $@ $^
 
 clean:
-	rm $(OBJS)
-	rm libmathbits.a
+	$(RM) $(OBJS)
+	$(RM) libmathbits.a
  
